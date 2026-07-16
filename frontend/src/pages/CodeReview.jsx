@@ -20,7 +20,7 @@ function CodeReview() {
 
     const data = await response.json();
 
-    setResult(data.message);
+    setResult(JSON.stringify(data.issues, null, 2));
   };
 
   return (
@@ -63,5 +63,7 @@ function CodeReview() {
     </div>
   );
 }
+
+
 
 export default CodeReview;
