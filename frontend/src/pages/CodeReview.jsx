@@ -3,7 +3,7 @@ import Navbar from "../Navbar";
 
 function CodeReview() {
   const [code, setCode] = useState("");
-  const [result, setResult] = useState("");
+  const [issues, setIssues] = useState([]);
 
   const handleReview = async (e) => {
     e.preventDefault();
@@ -20,7 +20,7 @@ function CodeReview() {
 
     const data = await response.json();
 
-    setResult(JSON.stringify(data.issues, null, 2));
+    setIssues(data.issues);
   };
 
   return (
@@ -33,7 +33,7 @@ function CodeReview() {
         </h1>
 
         <p className="mt-2 text-gray-600">
-          Paste your source code and review it using AI.
+          Paste your source code and review it.
         </p>
 
         <form onSubmit={handleReview} className="mt-8">
@@ -52,18 +52,49 @@ function CodeReview() {
           </button>
         </form>
 
-        {result && (
-          <div className="mt-6 bg-green-100 p-4 rounded-lg">
-            <p className="text-green-700 font-semibold">
-              {result}
+        <div className="mt-8">
+          <h2 className="text-2xl font-bold mb-4">
+            Review Results
+          </h2>
+
+          {issues.length === 0 ? (
+            <p className="text-gray-600">
+              No issues found.
             </p>
-          </div>
-        )}
+          ) : (
+            <div className="space-y-4">
+              {issues.map((issue, index) => (
+                <div
+                  key={index}
+                  className="bg-white p-5 rounded-lg shadow border-l-4 border-red-500"
+                >
+                  <h3 className="text-red-600 font-bold text-lg">
+                    Error
+                  </h3>
+
+                  <p className="mt-2">
+                    <strong>Rule:</strong> {issue.ruleId}
+                  </p>
+
+                  <p className="mt-2 text-gray-700">
+                    {issue.message}
+                  </p>
+
+                  <p className="mt-2 text-sm text-gray-500">
+                    Line: {issue.line}
+                  </p>
+
+                  <p className="text-sm text-gray-500">
+                    Column: {issue.column}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 }
-
-
 
 export default CodeReview;
