@@ -7,11 +7,22 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("AI Code Review Assistant Backend Running");
+  res.send("AI Code Review Backend Running");
 });
 
-const PORT = 5000;
+app.post("/api/review", (req, res) => {
+  const { code } = req.body;
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log("Received Code:");
+  console.log(code);
+
+  res.json({
+    success: true,
+    message: "Code received successfully",
+    code: code,
+  });
+});
+
+app.listen(5000, () => {
+  console.log("Server running on port 5000");
 });

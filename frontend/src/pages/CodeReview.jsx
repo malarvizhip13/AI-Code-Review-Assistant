@@ -3,11 +3,24 @@ import Navbar from "../Navbar";
 
 function CodeReview() {
   const [code, setCode] = useState("");
+  const [result, setResult] = useState("");
 
-  const handleReview = (e) => {
+  const handleReview = async (e) => {
     e.preventDefault();
 
-    console.log(code);
+    const response = await fetch("http://localhost:5000/api/review", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        code: code,
+      }),
+    });
+
+    const data = await response.json();
+
+    setResult(data.message);
   };
 
   return (
@@ -38,6 +51,14 @@ function CodeReview() {
             Review Code
           </button>
         </form>
+
+        {result && (
+          <div className="mt-6 bg-green-100 p-4 rounded-lg">
+            <p className="text-green-700 font-semibold">
+              {result}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
