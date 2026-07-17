@@ -118,7 +118,30 @@ app.get("/api/github", async (req, res) => {
     });
   }
 });
+app.get("/api/github/file", async (req, res) => {
+  try {
+    const { repo, path } = req.query;
 
+    const response = await axios.get(
+      `https://api.github.com/repos/${repo}/contents/${path}`
+    );
+
+    const content = Buffer.from(
+      response.data.content,
+      "base64"
+    ).toString("utf-8");
+
+    res.json({
+      success: true,
+      content,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
 app.post("/api/review", async (req, res) => {
   const { code } = req.body;
 

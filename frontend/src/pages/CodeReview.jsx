@@ -9,6 +9,7 @@ const [complexity, setComplexity] = useState(null);
 const [documentation, setDocumentation] = useState([]);
 const [repo, setRepo] = useState("");
 const [githubFiles, setGithubFiles] = useState([]);
+const [fileContent, setFileContent] = useState("");
 const handleGitHubFetch = async () => {
   try {
     const response = await fetch(
@@ -49,7 +50,26 @@ setAiReview(data.aiReview || "AI review is currently unavailable.");
 setComplexity(data.complexity);
 setDocumentation(data.documentation);
   };
+const handleFileClick = async (file) => {
+  try {
+    if (file.type === "dir") return;
 
+    const response = await fetch(
+      `http://localhost:5000/api/github/file?repo=${repo}&path=${file.path}`
+    );
+
+    const data = await response.json();
+
+    if (data.success) {
+      setFileContent(data.content);
+    } else {
+      alert("Failed to load file");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("File loading error");
+  }
+};
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar />
@@ -88,14 +108,27 @@ setDocumentation(data.documentation);
 
     {githubFiles.map((file) => (
       <div
-        key={file.sha}
-        className="p-2 border-b text-gray-700"
-      >
-        {file.type === "dir" ? "📁" : "📄"} {file.name}
-      </div>
+  key={file.sha}
+  onClick={() => handleFileClick(file)}
+  className="p-2 border-b text-gray-700 cursor-pointer hover:bg-gray-100"
+>
+  {file.type === "dir" ? "📁" : "📄"} {file.name}
+</div>
     ))}
   </div>
 )}
+{fileContent && (
+  <div className="mb-6 bg-gray-900 p-5 rounded-lg">
+    <h2 className="text-xl font-bold text-white mb-4">
+      File Content
+    </h2>
+
+    <pre className="text-green-400 whitespace-pre-wrap">
+      {fileContent}
+    </pre>
+  </div>
+)}
+
           <textarea
             value={code}
             onChange={(e) => setCode(e.target.value)}
