@@ -7,7 +7,28 @@ function CodeReview() {
   const [aiReview, setAiReview] = useState("");
 const [complexity, setComplexity] = useState(null);
 const [documentation, setDocumentation] = useState([]);
+const [repo, setRepo] = useState("");
+const [githubFiles, setGithubFiles] = useState([]);
+const handleGitHubFetch = async () => {
+  try {
+    const response = await fetch(
+      `http://localhost:5000/api/github?repo=${repo}`
+    );
 
+    const data = await response.json();
+
+    if (data.success) {
+  alert("GitHub repository loaded successfully!");
+  setGithubFiles(data.files);
+}
+else {
+      alert("Failed to load repository");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("Server error");
+  }
+};
   const handleReview = async (e) => {
     e.preventDefault();
 
@@ -43,6 +64,38 @@ setDocumentation(data.documentation);
         </p>
 
         <form onSubmit={handleReview} className="mt-8">
+
+          <input
+  type="text"
+  placeholder="GitHub repo (owner/repository)"
+  value={repo}
+  onChange={(e) => setRepo(e.target.value)}
+  className="w-full p-3 mb-4 border rounded-lg"
+/>
+
+<button
+  onClick={handleGitHubFetch}
+  className="mb-6 bg-gray-800 text-white px-5 py-3 rounded-lg"
+>
+  Load GitHub Repository
+</button>
+
+{githubFiles.length > 0 && (
+  <div className="mb-6 bg-white p-5 rounded-lg shadow">
+    <h2 className="text-xl font-bold mb-4">
+      GitHub Repository Files
+    </h2>
+
+    {githubFiles.map((file) => (
+      <div
+        key={file.sha}
+        className="p-2 border-b text-gray-700"
+      >
+        {file.type === "dir" ? "📁" : "📄"} {file.name}
+      </div>
+    ))}
+  </div>
+)}
           <textarea
             value={code}
             onChange={(e) => setCode(e.target.value)}

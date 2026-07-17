@@ -3,7 +3,7 @@ const { createClient } = require("@supabase/supabase-js");
 const express = require("express");
 const cors = require("cors");
 const { ESLint } = require("eslint");
-
+const axios = require("axios");
 const app = express();
 
 app.use(cors());
@@ -98,6 +98,27 @@ app.get("/api/reviews", async (req, res) => {
     });
   }
 });
+
+app.get("/api/github", async (req, res) => {
+  try {
+    const { repo } = req.query;
+
+    const response = await axios.get(
+      `https://api.github.com/repos/${repo}/contents`
+    );
+
+    res.json({
+      success: true,
+      files: response.data,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
 app.post("/api/review", async (req, res) => {
   const { code } = req.body;
 
