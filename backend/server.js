@@ -3,16 +3,36 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const { ESLint } = require("eslint");
-const OpenAI = require("openai");
 
 const app = express();
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 app.use(cors());
 app.use(express.json());
+
+function calculateComplexity(code) {
+  const lines = code.split("\n");
+
+  const functions = (code.match(/\bfunction\b/g) || []).length;
+
+  const classes = (code.match(/\bclass\b/g) || []).length;
+
+  const logicalLines = lines.filter(
+    (line) => line.trim() !== ""
+  ).length;
+
+  const conditions = (
+    code.match(/\b(if|for|while|case|catch)\b/g) || []
+  ).length;
+
+  const cyclomaticComplexity = conditions + 1;
+
+  return {
+    linesOfCode: logicalLines,
+    functions: functions,
+    classes: classes,
+    cyclomaticComplexity: cyclomaticComplexity,
+  };
+}
 
 app.get("/", (req, res) => {
   res.send("AI Code Review Backend Running");
@@ -32,24 +52,14 @@ app.post("/api/review", async (req, res) => {
 
     const messages = results[0].messages;
 
-    const aiResponse = await openai.responses.create({
-      model: "gpt-5-mini",
-      input: `You are an AI code review assistant.
-
-Review the following code and give:
-1. Bugs
-2. Code quality issues
-3. Improvement suggestions
-4. Best practice recommendations
-
-Code:
-${code}`,
-    });
+    const complexity = calculateComplexity(code);
 
     res.json({
       success: true,
       issues: messages,
-      aiReview: aiResponse.output_text,
+      aiReview:
+        "AI review is currently unavailable because API credits are not available.",
+      complexity: complexity,
     });
   } catch (error) {
     console.log(error);

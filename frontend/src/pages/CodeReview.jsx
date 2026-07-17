@@ -5,6 +5,7 @@ function CodeReview() {
   const [code, setCode] = useState("");
   const [issues, setIssues] = useState([]);
   const [aiReview, setAiReview] = useState("");
+const [complexity, setComplexity] = useState(null);
 
   const handleReview = async (e) => {
     e.preventDefault();
@@ -23,6 +24,7 @@ function CodeReview() {
 
    setIssues(data.issues || []);
 setAiReview(data.aiReview || "AI review is currently unavailable.");
+setComplexity(data.complexity);
   };
 
   return (
@@ -93,7 +95,43 @@ setAiReview(data.aiReview || "AI review is currently unavailable.");
               ))}
             </div>
           )}
+{complexity && (
+  <div className="mt-8 bg-white p-6 rounded-lg shadow">
+    <h2 className="text-2xl font-bold text-gray-800 mb-4">
+      Complexity Analysis
+    </h2>
 
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="bg-blue-100 p-4 rounded-lg">
+        <h3 className="font-bold">Lines of Code</h3>
+        <p className="text-2xl font-bold">
+          {complexity.linesOfCode}
+        </p>
+      </div>
+
+      <div className="bg-green-100 p-4 rounded-lg">
+        <h3 className="font-bold">Functions</h3>
+        <p className="text-2xl font-bold">
+          {complexity.functions}
+        </p>
+      </div>
+
+      <div className="bg-yellow-100 p-4 rounded-lg">
+        <h3 className="font-bold">Classes</h3>
+        <p className="text-2xl font-bold">
+          {complexity.classes}
+        </p>
+      </div>
+
+      <div className="bg-red-100 p-4 rounded-lg">
+        <h3 className="font-bold">Cyclomatic Complexity</h3>
+        <p className="text-2xl font-bold">
+          {complexity.cyclomaticComplexity}
+        </p>
+      </div>
+    </div>
+  </div>
+)}
           {aiReview && (
             <div className="mt-8 bg-blue-50 p-6 rounded-lg">
               <h2 className="text-2xl font-bold text-blue-700 mb-4">
