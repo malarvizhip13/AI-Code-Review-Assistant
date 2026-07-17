@@ -4,6 +4,7 @@ import Navbar from "../Navbar";
 function CodeReview() {
   const [code, setCode] = useState("");
   const [issues, setIssues] = useState([]);
+  const [aiReview, setAiReview] = useState("");
 
   const handleReview = async (e) => {
     e.preventDefault();
@@ -20,7 +21,8 @@ function CodeReview() {
 
     const data = await response.json();
 
-    setIssues(data.issues);
+   setIssues(data.issues || []);
+setAiReview(data.aiReview || "AI review is currently unavailable.");
   };
 
   return (
@@ -89,6 +91,18 @@ function CodeReview() {
                   </p>
                 </div>
               ))}
+            </div>
+          )}
+
+          {aiReview && (
+            <div className="mt-8 bg-blue-50 p-6 rounded-lg">
+              <h2 className="text-2xl font-bold text-blue-700 mb-4">
+                AI Code Review
+              </h2>
+
+              <p className="text-gray-700 whitespace-pre-line">
+                {aiReview}
+              </p>
             </div>
           )}
         </div>
