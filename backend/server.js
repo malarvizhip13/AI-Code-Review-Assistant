@@ -1,5 +1,5 @@
 require("dotenv").config();
-
+const { createClient } = require("@supabase/supabase-js");
 const express = require("express");
 const cors = require("cors");
 const { ESLint } = require("eslint");
@@ -8,7 +8,10 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
 function calculateComplexity(code) {
   const lines = code.split("\n");
 
@@ -73,7 +76,28 @@ function generateDocumentation(code) {
 app.get("/", (req, res) => {
   res.send("AI Code Review Backend Running");
 });
+app.get("/api/reviews", async (req, res) => {
+  try {
+    const { data: reviews, error } = await supabase
+      .from("reviews")
+      .select("*")
+      .order("created_at", { ascending: false });
 
+    if (error) {
+      throw error;
+    }
+
+    res.json({
+      success: true,
+      reviews: reviews,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
 app.post("/api/review", async (req, res) => {
   const { code } = req.body;
 
@@ -90,7 +114,23 @@ app.post("/api/review", async (req, res) => {
 
     const complexity = calculateComplexity(code);
     const documentation = generateDocumentation(code);
+const { data: savedReview, error: saveError } =
+  await supabase
+    .from("reviews")
+    .insert([
+      {
+        code: code,
+        issues: messages,
+        complexity: complexity,
+        documentation: documentation,
+      },
+    ])
+    .select()
+    .single();
 
+if (saveError) {
+  throw saveError;
+}
    res.json({
   success: true,
   issues: messages,

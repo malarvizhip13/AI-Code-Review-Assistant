@@ -3,6 +3,7 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import CodeReview from "./pages/CodeReview";
+import ReviewHistory from "./pages/ReviewHistory";
 function App() {
   return (
     <BrowserRouter>
@@ -11,6 +12,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/code-review" element={<CodeReview />} />
+        <Route path="/review-history" element={<ReviewHistory />} />
       </Routes>
     </BrowserRouter>
   );

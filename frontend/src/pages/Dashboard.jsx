@@ -34,12 +34,20 @@ function Dashboard() {
           </div>
         </div>
 
+      
         <button
-          onClick={() => navigate("/code-review")}
-          className="mt-8 bg-blue-600 text-white px-6 py-3 rounded-lg"
-        >
-          New Code Review
-        </button>
+  onClick={() => navigate("/code-review")}
+  className="mt-8 bg-blue-600 text-white px-6 py-3 rounded-lg"
+>
+  New Code Review
+</button>
+
+<button
+  onClick={() => navigate("/review-history")}
+  className="ml-4 mt-8 bg-purple-600 text-white px-6 py-3 rounded-lg"
+>
+  Review History
+</button>
       </div>
     </div>
   );
