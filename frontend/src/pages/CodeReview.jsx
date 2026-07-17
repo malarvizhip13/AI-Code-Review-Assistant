@@ -6,6 +6,7 @@ function CodeReview() {
   const [issues, setIssues] = useState([]);
   const [aiReview, setAiReview] = useState("");
 const [complexity, setComplexity] = useState(null);
+const [documentation, setDocumentation] = useState([]);
 
   const handleReview = async (e) => {
     e.preventDefault();
@@ -25,6 +26,7 @@ const [complexity, setComplexity] = useState(null);
    setIssues(data.issues || []);
 setAiReview(data.aiReview || "AI review is currently unavailable.");
 setComplexity(data.complexity);
+setDocumentation(data.documentation);
   };
 
   return (
@@ -130,6 +132,34 @@ setComplexity(data.complexity);
         </p>
       </div>
     </div>
+  </div>
+)}
+{documentation.length > 0 && (
+  <div className="mt-8 bg-purple-50 p-6 rounded-lg shadow">
+    <h2 className="text-2xl font-bold text-purple-700 mb-4">
+      Auto Documentation
+    </h2>
+
+    {documentation.map((doc, index) => (
+      <div
+        key={index}
+        className="bg-white p-4 rounded-lg mb-4"
+      >
+        <h3 className="text-xl font-bold text-gray-800">
+          {doc.type}: {doc.name}
+        </h3>
+
+        <p className="text-gray-700 mt-2">
+          {doc.description}
+        </p>
+
+        {doc.parameters && (
+          <p className="text-gray-600 mt-2">
+            <strong>Parameters:</strong> {doc.parameters}
+          </p>
+        )}
+      </div>
+    ))}
   </div>
 )}
           {aiReview && (

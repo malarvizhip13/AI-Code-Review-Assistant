@@ -34,6 +34,42 @@ function calculateComplexity(code) {
   };
 }
 
+function generateDocumentation(code) {
+  const documentation = [];
+
+  const functionMatches = code.match(
+    /function\s+(\w+)\s*\((.*?)\)/g
+  ) || [];
+
+  functionMatches.forEach((func) => {
+    const match = func.match(
+      /function\s+(\w+)\s*\((.*?)\)/
+    );
+
+    documentation.push({
+      type: "Function",
+      name: match[1],
+      description: `This function is used to perform the ${match[1]} operation.`,
+      parameters: match[2] || "No parameters",
+    });
+  });
+
+  const classMatches = code.match(
+    /class\s+(\w+)/g
+  ) || [];
+
+  classMatches.forEach((className) => {
+    const name = className.replace("class ", "");
+
+    documentation.push({
+      type: "Class",
+      name: name,
+      description: `This class is used to define the ${name} structure.`,
+    });
+  });
+
+  return documentation;
+}
 app.get("/", (req, res) => {
   res.send("AI Code Review Backend Running");
 });
@@ -53,14 +89,16 @@ app.post("/api/review", async (req, res) => {
     const messages = results[0].messages;
 
     const complexity = calculateComplexity(code);
+    const documentation = generateDocumentation(code);
 
-    res.json({
-      success: true,
-      issues: messages,
-      aiReview:
-        "AI review is currently unavailable because API credits are not available.",
-      complexity: complexity,
-    });
+   res.json({
+  success: true,
+  issues: messages,
+  aiReview:
+    "AI review is currently unavailable because API credits are not available.",
+  complexity: complexity,
+  documentation: documentation,
+});
   } catch (error) {
     console.log(error);
 
