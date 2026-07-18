@@ -13,7 +13,7 @@ const [fileContent, setFileContent] = useState("");
 const handleGitHubFetch = async () => {
   try {
     const response = await fetch(
-      `http://localhost:5000/api/github?repo=${repo}`
+      `https://ai-code-review-assistant-87un.onrender.com/api/github?repo=${repo}`
     );
 
     const data = await response.json();
@@ -33,7 +33,7 @@ else {
   const handleReview = async (e) => {
     e.preventDefault();
 
-    const response = await fetch("http://localhost:5000/api/review", {
+    const response = await fetch("https://ai-code-review-assistant-87un.onrender.com/api/review", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -55,7 +55,7 @@ const handleFileClick = async (file) => {
     if (file.type === "dir") return;
 
     const response = await fetch(
-      `http://localhost:5000/api/github/file?repo=${repo}&path=${file.path}`
+      `https://ai-code-review-assistant-87un.onrender.com/api/github/file?repo=${repo}&path=${file.path}`
     );
 
     const data = await response.json();

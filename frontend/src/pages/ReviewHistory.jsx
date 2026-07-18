@@ -4,7 +4,7 @@ function ReviewHistory() {
   const [reviews, setReviews] = useState([]);
 const [search, setSearch] = useState("");
   useEffect(() => {
-    fetch("http://localhost:5000/api/reviews")
+    fetch("https://ai-code-review-assistant-87un.onrender.com/api/reviews")
       .then((response) => response.json())
       .then((data) => {
         setReviews(data.reviews);
